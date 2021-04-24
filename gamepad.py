@@ -1,6 +1,6 @@
 from flexx import flx
 
-class Gamepad(flx.Widget):
+class GamepadClient(flx.Widget):
 
     CSS = """
     #gamepad {
@@ -8,7 +8,7 @@ class Gamepad(flx.Widget):
     height: 598px;
     }
 
-    #gamepad {
+    #gamepad[data-color="black"] {
         background-image: url(https://raw.githubusercontent.com/e7d/gamepad-viewer/master/templates/ds4/base-black.svg);
     }
 
@@ -277,45 +277,196 @@ class Gamepad(flx.Widget):
 
     """
 
+    def create_triggers(self, root):
+        triggers = document.createElement('div')
+        triggers.setAttribute('class', 'triggers')
+
+        triggerLeft = document.createElement('span')
+        triggerLeft.setAttribute('class', 'trigger left')
+        triggerLeft.setAttribute('data-button', 6)
+        triggers.appendChild(triggerLeft)
+
+        triggerRight = document.createElement('span')
+        triggerRight.setAttribute('class', 'trigger right')
+        triggerRight.setAttribute('data-button', 7)
+        triggers.appendChild(triggerRight)
+
+        triggerClear = document.createElement('span')
+        triggerClear.setAttribute('class', 'clear')
+        triggers.appendChild(triggerClear)
+
+        root.appendChild(triggers)
+
+    def create_bumpers(self, root):
+        bumpers = document.createElement('div')
+        bumpers.setAttribute('class', 'bumpers')
+
+        bumperLeft = document.createElement('span')
+        bumperLeft.setAttribute('class', 'bumper left')
+        bumperLeft.setAttribute('data-button', 4)
+        bumpers.appendChild(bumperLeft)
+
+        bumperRight = document.createElement('span')
+        bumperRight.setAttribute('class', 'bumper right')
+        bumperRight.setAttribute('data-button', 5)
+        bumpers.appendChild(bumperRight)
+
+        bumperClear = document.createElement('span')
+        bumperClear.setAttribute('class', 'clear')
+        bumpers.appendChild(bumperClear)
+
+        root.appendChild(bumpers)
+
+
+    def create_touchpad(self, root):
+        touchpad = document.createElement('div')
+        touchpad.setAttribute('class', 'touchpad')
+        touchpad.setAttribute('data-button', 17)
+
+        root.appendChild(touchpad)
+
+    def create_meta(self, root):
+        meta = document.createElement('div')
+        meta.setAttribute('class', 'meta')
+        meta.setAttribute('data-button', 16)
+
+        root.appendChild(meta)
+
+    def create_arrows(self, root):
+        arrows = document.createElement('div')
+        arrows.setAttribute('class', 'arrows')
+        
+        select = document.createElement('span')
+        select.setAttribute('class', 'select')
+        select.setAttribute('data-button', 8)
+        arrows.appendChild(select)
+
+        start = document.createElement('span')
+        start.setAttribute('class', 'start')
+        start.setAttribute('data-button', 9)
+        arrows.appendChild(start)
+
+        arrowClear = document.createElement('span')
+        arrowClear.setAttribute('class', 'clear')
+        arrows.appendChild(arrowClear)
+
+        root.appendChild(arrows)
+
+    def create_buttons(self, root):
+        buttons = document.createElement('div')
+        buttons.setAttribute('class', 'buttons')
+
+        aBtn = document.createElement('span')
+        aBtn.setAttribute('class', 'button a')
+        aBtn.setAttribute('data-button', 0)
+        buttons.appendChild(aBtn)
+
+        bBtn = document.createElement('span')
+        bBtn.setAttribute('class', 'button b')
+        bBtn.setAttribute('data-button', 1)
+        buttons.appendChild(bBtn)
+
+        xBtn = document.createElement('span')
+        xBtn.setAttribute('class', 'button x')
+        xBtn.setAttribute('data-button', 2)
+        buttons.appendChild(xBtn)
+
+        yBtn = document.createElement('span')
+        yBtn.setAttribute('class', 'button y')
+        yBtn.setAttribute('data-button', 3)
+        buttons.appendChild(yBtn)
+
+        root.appendChild(buttons)
+
+    def create_sticks(self, root):
+        sticks = document.createElement('div')  
+        sticks.setAttribute('class', 'sticks')
+
+        stickLeft = document.createElement('span')
+        stickLeft.setAttribute('class', 'stick left')
+        stickLeft.setAttribute('data-button', 10)
+        stickLeft.setAttribute('data-axis-x', 0)
+        stickLeft.setAttribute('data-axis-y', 1)
+        sticks.appendChild(stickLeft)
+
+        stickRight = document.createElement('span')
+        stickRight.setAttribute('class', 'stick right')
+        stickRight.setAttribute('data-button', 11)
+        stickRight.setAttribute('data-axis-x', 2)
+        stickRight.setAttribute('data-axis-y', 3)
+        sticks.appendChild(stickRight)
+
+        root.appendChild(sticks)
+
+    def create_dpad(self, root):
+        dpad = document.createElement('div')
+        dpad.setAttribute('class', 'dpad')
+
+        faceUp = document.createElement('span')
+        faceUp.setAttribute('class', 'face up')
+        faceUp.setAttribute('data-button', 12)
+        dpad.appendChild(faceUp)
+
+        faceDown = document.createElement('span')
+        faceDown.setAttribute('class', 'face down')
+        faceDown.setAttribute('data-button', 13)
+        dpad.appendChild(faceDown)
+
+        faceLeft = document.createElement('span')
+        faceLeft.setAttribute('class', 'face left')
+        faceLeft.setAttribute('data-button', 14)
+        dpad.appendChild(faceLeft)
+
+        faceRight = document.createElement('span')
+        faceRight.setAttribute('class', 'face right')
+        faceRight.setAttribute('data-button', 15)
+        dpad.appendChild(faceRight)
+
+        root.appendChild(dpad)
+
+
     def _create_dom(self):
         # Create the root element
-        return flx.create_element('div', {'id': 'gamepad', 'data-color': 'black'})
-
-    def _render_dom(self):
         global document
-        document.getElementById('gamepad').setAttribute('data-color', 'black')
-        return [
-            flx.create_element('div', {'class': 'triggers'},
-                flx.create_element('span', {'class': 'trigger left', 'data-button': '6'}),
-                flx.create_element('span', {'class': 'trigger right', 'data-button': '7'}),
-                flx.create_element('span', {'class': 'clear'})),
-            flx.create_element('div', {'class': 'bumpers'},
-                flx.create_element('span', {'class': 'bumper left', 'data-button': '4'}),
-                flx.create_element('span', {'class': 'bumper right', 'data-button': '5'}),
-                flx.create_element('span', {'class': 'clear'})),
-            flx.create_element('div', {'class': 'touchpad', 'data-button': '17'}),
-            flx.create_element('div', {'class': 'meta', 'data-button': '16'}),
-            flx.create_element('div', {'class': 'arrows'},
-                flx.create_element('span', {'class': 'select', 'data-button': '8'}),
-                flx.create_element('span', {'class': 'start', 'data-button': '9'}),
-                flx.create_element('span', {'class': 'clear'})),
-            flx.create_element('div', {'class': 'buttons'},
-                flx.create_element('span', {'class': 'button a', 'data-button': '0'}),
-                flx.create_element('span', {'class': 'button b', 'data-button': '1'}),
-                flx.create_element('span', {'class': 'button x', 'data-button': '2'}),
-                flx.create_element('span', {'class': 'button y', 'data-button': '3'})),
-            flx.create_element('div', {'class': 'sticks'},
-                flx.create_element('span', {'class': 'stick left', 'data-button': '10', 'data-axis-x': '0', 'data-axis-y': '1'}),
-                flx.create_element('span', {'class': 'stick right', 'data-button': '11', 'data-axis-x': '2', 'data-axis-y': '3'})),
-            flx.create_element('div', {'class': 'dpad'},
-                flx.create_element('span', {'class': 'face up', 'data-button': '12'}),
-                flx.create_element('span', {'class': 'face down', 'data-button': '13'}),
-                flx.create_element('span', {'class': 'face left', 'data-button': '14'}),
-                flx.create_element('span', {'class': 'face right', 'data-button': '15'}))
-        ]
+
+        root = document.createElement('div')
+
+        root.setAttribute('id', 'gamepad')
+        root.setAttribute('data-color', 'black')
+
+        self.create_triggers(root)
+        self.create_bumpers(root)
+        self.create_touchpad(root)
+        self.create_meta(root)
+        self.create_arrows(root)
+        self.create_buttons(root)
+        self.create_sticks(root)
+        self.create_dpad(root)
+
+        return root
+
+class GamepadServer(flx.Widget):
+    
+    def init(self):
+        with flx.HBox(title='Gamepad Test'):
+            self.gamepad = GamepadClient()
+        self.pressed = False
+        self.cycle()
+
+    def cycle(self):
+        global window
+        global document
+
+        square = document.getElementsByClassName('button x')[0]
+        if (square):
+            self.pressed = not self.pressed
+            square.setAttribute("data-pressed", self.pressed)
+        
+        window.setTimeout(self.cycle, 1000)
+
 
 if __name__ == '__main__':
-    a = flx.App(Gamepad)
+    a = flx.App(GamepadServer)
     a.serve()
     # m = a.launch('firefox')  # for use during development
     flx.start()
