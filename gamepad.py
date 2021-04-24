@@ -1,7 +1,8 @@
 from flexx import flx
+import pygame
+
 
 class GamepadClient(flx.Widget):
-
     CSS = """
     #gamepad {
     width: 806px;
@@ -57,6 +58,10 @@ class GamepadClient(flx.Widget):
     #gamepad .trigger.right {
         float: right;
         background-position-x: 99px;
+    }
+    
+    #gamepad .trigger[data-pressed="true"] {
+        clip-path: inset(0% 0px 0px 0pc);
     }
 
     #gamepad .bumper {
@@ -317,7 +322,6 @@ class GamepadClient(flx.Widget):
 
         root.appendChild(bumpers)
 
-
     def create_touchpad(self, root):
         touchpad = document.createElement('div')
         touchpad.setAttribute('class', 'touchpad')
@@ -335,7 +339,7 @@ class GamepadClient(flx.Widget):
     def create_arrows(self, root):
         arrows = document.createElement('div')
         arrows.setAttribute('class', 'arrows')
-        
+
         select = document.createElement('span')
         select.setAttribute('class', 'select')
         select.setAttribute('data-button', 8)
@@ -379,7 +383,7 @@ class GamepadClient(flx.Widget):
         root.appendChild(buttons)
 
     def create_sticks(self, root):
-        sticks = document.createElement('div')  
+        sticks = document.createElement('div')
         sticks.setAttribute('class', 'sticks')
 
         stickLeft = document.createElement('span')
@@ -424,7 +428,6 @@ class GamepadClient(flx.Widget):
 
         root.appendChild(dpad)
 
-
     def _create_dom(self):
         # Create the root element
         global document
@@ -445,24 +448,93 @@ class GamepadClient(flx.Widget):
 
         return root
 
-class GamepadServer(flx.Widget):
-    
+    @flx.action
+    def axis_update(self, stick, axis, value):
+        # print("axis update", stick, axis, value)
+        element = document.getElementsByClassName(stick)[0]
+        if element:
+            element.setAttribute("data-value-x" if axis == "x" else "data-value-y", value)
+            xValue = element.getAttribute("data-value-x")
+            yValue = element.getAttribute("data-value-y")
+            element.style["margin-top"] = float(yValue) * 25 + "px"
+            element.style["margin-left"] = float(xValue) * 25 + "px"
+            element.style.transform = 'rotateX(-' + float(yValue * 30) + 'deg) ' + \
+                                      'rotateY(' + float(xValue * 30) + 'deg)'
+
+    @flx.action
+    def button_update(self, button_number, pressed):
+        print("button update")
+        button_name = mapping.get(button_number)
+        button = document.getElementsByClassName(button_name)[0]
+        if button:
+            button.setAttribute("data-pressed", pressed)
+
+
+mapping = {
+    0: "button x",
+    1: "button a",
+    2: "button b",
+    3: "button y",
+    4: "bumper left",
+    5: "bumper right",
+    6: "trigger left",
+    7: "trigger right",
+    8: "select",
+    9: "start",
+    10: "left stick",
+    11: "right stick",
+    12: "meta",
+    13: "touchpad",
+    "left": "face left",
+    "right": "face right",
+    "up": "face up",
+    "down": "face down",
+}
+
+
+class GamepadServer(flx.PyWidget):
     def init(self):
-        with flx.HBox(title='Gamepad Test'):
+        with flx.VBox(title='Gamepad Test'):
             self.gamepad = GamepadClient()
-        self.pressed = False
-        self.cycle()
+            self.start = flx.Button(text='Start')
 
-    def cycle(self):
-        global window
-        global document
-
-        square = document.getElementsByClassName('button x')[0]
-        if (square):
-            self.pressed = not self.pressed
-            square.setAttribute("data-pressed", self.pressed)
-        
-        window.setTimeout(self.cycle, 1000)
+    @flx.reaction('start.pointer_down')
+    def _read_gamepad(self, *events):
+        pygame.init()
+        joystick = pygame.joystick.Joystick(0)
+        joystick.init()
+        while 1:
+            for event in pygame.event.get():
+                if event.type == pygame.JOYBUTTONDOWN:
+                    self.gamepad.button_update(event.button, True)
+                elif event.type == pygame.JOYBUTTONUP:
+                    self.gamepad.button_update(event.button, False)
+                elif event.type == pygame.JOYAXISMOTION:
+                    if event.axis == 0:
+                        self.gamepad.axis_update("stick left", "x", event.value)
+                    if event.axis == 1:
+                        # print(event)
+                        self.gamepad.axis_update("stick left", "y", event.value)
+                    if event.axis == 2:
+                        self.gamepad.axis_update("stick right", "x", event.value)
+                    if event.axis == 5:
+                        self.gamepad.axis_update("stick right", "y", event.value)
+                elif event.type == pygame.JOYHATMOTION:
+                    [x, y] = event.value
+                    if x == 0:
+                        self.gamepad.button_update("left", False)
+                        self.gamepad.button_update("right", False)
+                    if x == -1:
+                        self.gamepad.button_update("left", True)
+                    if x == 1:
+                        self.gamepad.button_update("right", True)
+                    if y == 0:
+                        self.gamepad.button_update("up", False)
+                        self.gamepad.button_update("down", False)
+                    if y == -1:
+                        self.gamepad.button_update("down", True)
+                    if y == 1:
+                        self.gamepad.button_update("up", True)
 
 
 if __name__ == '__main__':
