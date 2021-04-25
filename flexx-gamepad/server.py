@@ -56,31 +56,23 @@ class GamepadServer(flx.PyWidget):
                 self.gamepad.button_update(event.button, False)
 
             elif event.type == pygame.JOYAXISMOTION:
-                if event.axis == button_mapping("left_joystick_x"):
-                    self.gamepad.axis_update("stick left", "x", event.value)
-                if event.axis == button_mapping("left_joystick_y"):
-                    self.gamepad.axis_update("stick left", "y", event.value)
-                if event.axis == button_mapping("right_joystick_x"):
-                    self.gamepad.axis_update("stick right", "x", event.value)
-                if event.axis == button_mapping("right_joystick_y"):
-                    self.gamepad.axis_update("stick right", "y", event.value)
+                axis_map = button_mapping("axis")
+                if event.axis in axis_map:
+                    [name, axis] = axis_map[event.axis]
+                    self.gamepad.axis_update(name, axis, event.value)
 
             elif event.type == pygame.JOYHATMOTION:
                 [x, y] = event.value
                 if x == 0:
                     self.gamepad.button_update("left", False)
                     self.gamepad.button_update("right", False)
-                if x == -1:
-                    self.gamepad.button_update("left", True)
-                if x == 1:
-                    self.gamepad.button_update("right", True)
+                else:
+                    self.gamepad.button_update("left" if x == -1 else "right", True)
                 if y == 0:
                     self.gamepad.button_update("up", False)
                     self.gamepad.button_update("down", False)
-                if y == -1:
-                    self.gamepad.button_update("down", True)
-                if y == 1:
-                    self.gamepad.button_update("up", True)
+                else:
+                    self.gamepad.button_update("down" if y == -1 else "up", True)
 
 
 if __name__ == '__main__':

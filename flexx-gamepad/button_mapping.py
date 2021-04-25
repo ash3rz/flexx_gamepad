@@ -19,10 +19,12 @@ darwin = {
     "right": "dpad right",
     "up": "dpad up",
     "down": "dpad down",
-    "left_joystick_x": 0,
-    "left_joystick_y": 1,
-    "right_joystick_x": 2,
-    "right_joystick_y": 5,
+    "axis": {
+        0: ["stick left", "x"],
+        1: ["stick left", "y"],
+        2: ["stick right", "x"],
+        5: ["stick right", "y"]
+    }
 }
 
 linux = {
@@ -44,10 +46,12 @@ linux = {
     "right": "dpad right",
     "up": "dpad up",
     "down": "dpad down",
-    "left_joystick_x": 0,
-    "left_joystick_y": 1,
-    "right_joystick_x": 3,
-    "right_joystick_y": 4,
+    "axis": {
+        0: ["stick left", "x"],
+        1: ["stick left", "y"],
+        3: ["stick right", "x"],
+        4: ["stick right", "y"]
+    }
 }
 
 
