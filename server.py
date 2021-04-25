@@ -5,14 +5,17 @@ import pygame
 import asyncio
 import os
 import json
-import sys
 
 # Dummy video to effectively make pygame run headless
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 
+flexx_port = 3000
+
 # Read config file
-with open("config.json") as json_config_file:
-    config = json.load(json_config_file)
+if os.path.isfile("config.json"):
+    with open("config.json") as json_config_file:
+        config = json.load(json_config_file)
+        flexx_port = config["port"]
 
 
 class GamepadServer(flx.PyWidget):
@@ -78,5 +81,5 @@ class GamepadServer(flx.PyWidget):
 if __name__ == '__main__':
     a = flx.App(GamepadServer)
     a.serve()
-    flx.create_server(host='0.0.0.0', port=config["port"], loop=asyncio.new_event_loop())
+    flx.create_server(host='0.0.0.0', port=flexx_port, loop=asyncio.new_event_loop())
     flx.start()
