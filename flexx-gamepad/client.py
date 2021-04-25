@@ -200,7 +200,7 @@ class GamepadClient(flx.Widget):
         return root
 
     @flx.action
-    def status(self, connected):
+    def connected(self, connected):
         element = document.getElementById("gamepad")
         if element:
             if connected:

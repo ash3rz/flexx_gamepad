@@ -16,38 +16,34 @@ with open("config.json") as json_config_file:
 
 class GamepadServer(flx.PyWidget):
     def init(self):
-        self.gamepad_connected = False
-        with flx.VBox(title='Gamepad Test'):
+        with flx.HBox():
             self.gamepad = GamepadClient()
-            self.start = flx.Button(text='Start')
-            self.stop = flx.Button(text='Stop')
+        # This needs to be in a callback fn because Flexx waits for the init
+        # call to complete before making the server available
+        asyncio.get_event_loop().call_later(1, self.handle_gamepad_start)
 
-    @flx.reaction('stop.pointer_down')
-    def _stop_gamepad(self, *events):
-        self.gamepad_connected = False
-        self.gamepad.status(False)
+    def handle_gamepad_disconnect(self):
         pygame.quit()
+        self.gamepad.connected(False)
+        self.handle_gamepad_start()
 
-    @flx.reaction('start.pointer_down')
-    def _check_gamepad(self, *events):
+    def handle_gamepad_start(self):
         pygame.init()
         num_joysticks = pygame.joystick.get_count()
-        if num_joysticks < 1:
-            self.gamepad_connected = False
-            self.gamepad.status(False)
-        else:
-            self.gamepad_connected = True
-            self.gamepad.status(True)
+
+        if num_joysticks > 0:
+            self.gamepad.connected(True)
             joystick = pygame.joystick.Joystick(0)
             joystick.init()
-            while self.gamepad_connected:
+            while pygame.get_init() and pygame.joystick.get_count() > 0:
                 self.read_gamepad()
+
+        self.handle_gamepad_disconnect()
 
     def read_gamepad(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.gamepad_connected = False
-                self.gamepad.status(False)
+                self.handle_gamepad_disconnect()
 
             elif event.type == pygame.JOYBUTTONDOWN:
                 self.gamepad.button_update(event.button, True)
