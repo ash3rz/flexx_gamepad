@@ -1,10 +1,7 @@
 from flexx import flx
 from button_mapping import button_mapping
-import os
 
-BASE_DIR = os.getcwd()
-
-with open(BASE_DIR + '/flexx-gamepad/style.css') as f:
+with open('style.css') as f:
     style = f.read()
 
 flx.assets.associate_asset(__name__, 'style.css', style)

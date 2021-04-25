@@ -81,6 +81,7 @@ windows = {
     }
 }
 
+
 def button_mapping(button_key):
     platform = sys.platform
     if "darwin" == platform:

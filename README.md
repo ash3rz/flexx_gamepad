@@ -22,12 +22,12 @@ You must have Python 3.5+.  Flexx has a [known issue](https://github.com/flexxui
 $ pip install -r requirements.txt
 ```
 
-# Running flexx-gamepad
+# Running flexx_gamepad
 
 > NOTE: Depending on your OS, you may encounter an error regarding missing dependencies for `pygame`.  Please refer to their [dependency docs](https://github.com/pygame/pygame#dependencies).
 
 ```bash
-$ python3 flexx-gamepad/server.py
+$ python3 server.py
 
 Serving apps at http://0.0.0.0:3000
 ```
