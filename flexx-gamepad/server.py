@@ -48,10 +48,13 @@ class GamepadServer(flx.PyWidget):
             if event.type == pygame.QUIT:
                 self.gamepad_connected = False
                 self.gamepad.status(False)
+
             elif event.type == pygame.JOYBUTTONDOWN:
                 self.gamepad.button_update(event.button, True)
+
             elif event.type == pygame.JOYBUTTONUP:
                 self.gamepad.button_update(event.button, False)
+
             elif event.type == pygame.JOYAXISMOTION:
                 if event.axis == button_mapping("left_joystick_x"):
                     self.gamepad.axis_update("stick left", "x", event.value)
@@ -61,6 +64,7 @@ class GamepadServer(flx.PyWidget):
                     self.gamepad.axis_update("stick right", "x", event.value)
                 if event.axis == button_mapping("right_joystick_y"):
                     self.gamepad.axis_update("stick right", "y", event.value)
+
             elif event.type == pygame.JOYHATMOTION:
                 [x, y] = event.value
                 if x == 0:

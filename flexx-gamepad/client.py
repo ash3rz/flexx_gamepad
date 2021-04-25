@@ -93,25 +93,25 @@ def create_buttons():
     buttons = document.createElement('div')
     buttons.setAttribute('class', 'buttons')
 
-    aBtn = document.createElement('span')
-    aBtn.setAttribute('class', 'button cross')
+    button_cross = document.createElement('span')
+    button_cross.setAttribute('class', 'button cross')
 
-    buttons.appendChild(aBtn)
+    buttons.appendChild(button_cross)
 
-    bBtn = document.createElement('span')
-    bBtn.setAttribute('class', 'button circle')
+    button_circle = document.createElement('span')
+    button_circle.setAttribute('class', 'button circle')
 
-    buttons.appendChild(bBtn)
+    buttons.appendChild(button_circle)
 
-    xBtn = document.createElement('span')
-    xBtn.setAttribute('class', 'button square')
+    button_square = document.createElement('span')
+    button_square.setAttribute('class', 'button square')
 
-    buttons.appendChild(xBtn)
+    buttons.appendChild(button_square)
 
-    yBtn = document.createElement('span')
-    yBtn.setAttribute('class', 'button triangle')
+    button_triangle = document.createElement('span')
+    button_triangle.setAttribute('class', 'button triangle')
 
-    buttons.appendChild(yBtn)
+    buttons.appendChild(button_triangle)
 
     return buttons
 
