@@ -4,9 +4,14 @@ from button_mapping import button_mapping
 import pygame
 import asyncio
 import os
+import json
 
 # Dummy video to effectively make pygame run headless
 os.environ["SDL_VIDEODRIVER"] = "dummy"
+
+# Read config file
+with open("config.json") as json_config_file:
+    config = json.load(json_config_file)
 
 
 class GamepadServer(flx.PyWidget):
@@ -77,5 +82,5 @@ class GamepadServer(flx.PyWidget):
 if __name__ == '__main__':
     a = flx.App(GamepadServer)
     a.serve()
-    flx.create_server(host='0.0.0.0', port=3000, loop=asyncio.new_event_loop())
+    flx.create_server(host='0.0.0.0', port=config["port"], loop=asyncio.new_event_loop())
     flx.start()
