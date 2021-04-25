@@ -19,7 +19,7 @@ $ pip install -r requirements.txt
 > NOTE: Depending on your OS, you may encounter an error regarding missing dependencies for `pygame`.  Please refer to their [dependency docs](https://github.com/pygame/pygame#dependencies).
 
 ```bash
-$ python3 gamepad.py
+$ python3 flexx-gamepad/server.py
 
 Serving apps at http://0.0.0.0:3000
 ```
