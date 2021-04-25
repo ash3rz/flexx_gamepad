@@ -209,18 +209,22 @@ class GamepadClient(flx.Widget):
                 element.classList.add("disconnected")
 
     @flx.action
-    def axis_update(self, stick, axis, value):
-        element = document.getElementsByClassName(stick)[0]
+    def axis_update(self, class_name, axis, value):
+        element = document.getElementsByClassName(class_name)[0]
         if element:
             element.setAttribute("data-value-x" if axis == "x" else "data-value-y", value)
-        x_value = element.getAttribute("data-value-x")
-        y_value = element.getAttribute("data-value-y")
-        element.style["margin-top"] = float(y_value) * 25 + "px"
-        element.style["margin-left"] = float(x_value) * 25 + "px"
+            x_value = element.getAttribute("data-value-x")
+            y_value = element.getAttribute("data-value-y")
+            element.style["margin-top"] = float(y_value) * 25 + "px"
+            element.style["margin-left"] = float(x_value) * 25 + "px"
 
     @flx.action
     def button_update(self, button_key, pressed):
-        button_name = button_mapping(button_key)
-        button = document.getElementsByClassName(button_name)[0]
+        class_name = button_mapping(button_key)
+        self.button_render(class_name, pressed)
+
+    @flx.action
+    def button_render(self, class_name, pressed):
+        button = document.getElementsByClassName(class_name)[0]
         if button:
             button.setAttribute("data-pressed", pressed)

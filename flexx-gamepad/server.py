@@ -5,6 +5,7 @@ import pygame
 import asyncio
 import os
 import json
+import sys
 
 # Dummy video to effectively make pygame run headless
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -55,7 +56,10 @@ class GamepadServer(flx.PyWidget):
                 axis_map = button_mapping("axis")
                 if event.axis in axis_map:
                     [name, axis] = axis_map[event.axis]
-                    self.gamepad.axis_update(name, axis, event.value)
+                    if axis:
+                        self.gamepad.axis_update(name, axis, event.value)
+                    else:
+                        self.gamepad.button_render(name, True if event.value > 0 else False)
 
             elif event.type == pygame.JOYHATMOTION:
                 [x, y] = event.value
