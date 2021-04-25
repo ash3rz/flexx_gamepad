@@ -6,9 +6,17 @@ Most gamepad visualizers work by reading inputs directly from the browser. This 
 
 The purpose of this project is to enable users to connect their gamepad to any device and display the visualizer on a separate device, as long as the two devices are accessible to each other.
 
+# Supported Controllers
+* PlayStation DS4
+
+# Supported Operating Systems
+* Linux
+* MacOS
+* Windows
+
 # Installation
 
-You must have Python 3.5+
+You must have Python 3.5+.  Flexx has a [known issue](https://github.com/flexxui/flexx/issues/674) with Python 3.9 however.
 
 ```bash
 $ pip install -r requirements.txt
