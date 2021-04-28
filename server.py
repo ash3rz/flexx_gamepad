@@ -1,10 +1,12 @@
-from flexx import flx
-from client import GamepadClient
-from button_mapping import button_mapping
-import pygame
 import asyncio
-import os
 import json
+import os
+
+import pygame
+from flexx import flx
+
+from button_mapping import button_mapping
+from client import GamepadClient
 
 # Dummy video to effectively make pygame run headless
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -22,32 +24,16 @@ class GamepadServer(flx.PyWidget):
     def init(self):
         with flx.HBox():
             self.gamepad = GamepadClient()
+
+        self.done = False
         # This needs to be in a callback fn because Flexx waits for the init
         # call to complete before making the server available
         asyncio.get_event_loop().call_later(1, self.handle_gamepad_start)
 
-    def handle_gamepad_disconnect(self):
-        pygame.quit()
-        self.gamepad.connected(False)
-        self.handle_gamepad_start()
-
-    def handle_gamepad_start(self):
-        pygame.init()
-        num_joysticks = pygame.joystick.get_count()
-
-        if num_joysticks > 0:
-            self.gamepad.connected(True)
-            joystick = pygame.joystick.Joystick(0)
-            joystick.init()
-            while pygame.get_init() and pygame.joystick.get_count() > 0:
-                self.read_gamepad()
-
-        self.handle_gamepad_disconnect()
-
-    def read_gamepad(self):
+    def read_gamepad_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.handle_gamepad_disconnect()
+                self.done = True
 
             elif event.type == pygame.JOYBUTTONDOWN:
                 self.gamepad.button_update(event.button, True)
@@ -77,9 +63,30 @@ class GamepadServer(flx.PyWidget):
                 else:
                     self.gamepad.button_update("down" if y == -1 else "up", True)
 
+    def handle_gamepad_start(self):
+        pygame.init()
+        pygame.joystick.init()
+
+        # The order in which these are executed (read events, then get the number of joysticks,
+        # then init joystick) seems illogical, but also seems to be necessary
+        # This is the same order from pygame's joystick sample code:
+        # https://www.pygame.org/docs/ref/joystick.html
+        while not self.done:
+            self.read_gamepad_events()
+
+            num_joysticks = pygame.joystick.get_count()
+
+            if num_joysticks > 0:
+                self.gamepad.connected(True)
+            else:
+                self.gamepad.connected(False)
+            for i in range(num_joysticks):
+                joystick = pygame.joystick.Joystick(i)
+                joystick.init()
+        pygame.quit()
+
 
 if __name__ == '__main__':
-    a = flx.App(GamepadServer)
-    a.serve()
-    flx.create_server(host='0.0.0.0', port=flexx_port, loop=asyncio.new_event_loop())
-    flx.start()
+    flx.App(GamepadServer).serve()
+    flx.create_server(host='0.0.0.0', port=3000)
+    flx.run()
